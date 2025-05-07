@@ -36,7 +36,7 @@ longest_streak_data.to_csv('/Users/au740615/Documents/projects/ecokgml-example/f
 
 plt.figure(figsize=(12, 4))
 plt.plot(longest_streak_data.datetime, longest_streak_data.chlor_rfu)
-plt.title("Chlorophyll-a time series")
+plt.title("Monitored time series")
 plt.xlabel("Time")
 plt.ylabel("Chl-a signal")
 plt.tight_layout()
@@ -63,6 +63,13 @@ X = create_windows(diurnal_scaled, window_size=window_size)
 
 X.shape  # Confirm shape: (num_windows, 48)
 
+plt.figure(figsize=(12, 4))
+plt.plot(diurnal)
+plt.title("Hourly scaled signal")
+plt.xlabel("Time")
+plt.ylabel("Chl-a signal")
+plt.tight_layout()
+plt.show()
 
 import torch
 import torch.nn as nn
