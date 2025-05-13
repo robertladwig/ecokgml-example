@@ -254,8 +254,13 @@ print(dt3.flag_spec_cond.describe())
 print("--------------------\n\n")
 
 import datetime as dt 
-filtered_df = dt3[dt3['year4'] == 2022]    
+filtered_df = dt3[dt3['year4'] == 2022] 
+
 filtered_df['sampletime_datetime'] = pd.to_datetime(dt3['sampletime_datetime']).dt.time
 
-filtered_df = filtered_df[["sampledate_datetime", "sampletime_datetime", "chlor_rfu"]]
+filtered_df = filtered_df[["sampledate_datetime", "sampletime_datetime", "chlor_rfu", "wind_speed", "do_raw", "do_wtemp", "par"]]
+
+filtered_df = filtered_df[filtered_df['sampledate_datetime'] >= '2022-06-03'] 
+filtered_df = filtered_df[filtered_df['sampledate_datetime'] <= '2022-06-06']   
 filtered_df.to_csv('/Users/au740615/Documents/projects/ecokgml-example/processed_data.csv', index=False)
+
