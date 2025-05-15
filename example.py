@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from math import pi, exp, sqrt, log, atan, sin, radians, nan, isinf, ceil, floor
+from sklearn.metrics import mean_squared_error, mean_absolute_error
 
 # Simulate a diurnal cycle with 3 regimes (e.g., day-night CH₄ variations)
 np.random.seed(42)
@@ -102,43 +103,43 @@ longest_streak_data.to_csv('/Users/au740615/Documents/projects/ecokgml-example/f
 
 
 plt.figure(figsize=(6, 3))
-plt.plot(longest_streak_data.datetime, longest_streak_data.wind_speed)
-plt.xlabel("")
-plt.ylabel("Wind velocity")
+plt.plot(longest_streak_data.datetime, longest_streak_data.wind_speed, color='black')
+plt.xlabel("", fontsize=15)
+plt.ylabel("Wind velocity", fontsize=15)
 plt.tight_layout()
 plt.grid(True)
-plt.savefig('figs/bc_wind.png')
+plt.savefig('/Users/au740615/Documents/projects/ecokgml-example/figs/bc_wind.png')
 plt.show()
 
 
 plt.figure(figsize=(6, 3))
-plt.plot(longest_streak_data.datetime, longest_streak_data.do_wtemp)
+plt.plot(longest_streak_data.datetime, longest_streak_data.do_wtemp, color='black')
 plt.xlabel("")
-plt.ylabel("Water temperature")
+plt.ylabel("Water temperature", fontsize=15)
 plt.tight_layout()
 plt.grid(True)
-plt.savefig('figs/bc_wtemp.png')
+plt.savefig('/Users/au740615/Documents/projects/ecokgml-example/figs/bc_wtemp.png')
 plt.show()
 
 
 plt.figure(figsize=(6, 3))
-plt.plot(longest_streak_data.datetime, longest_streak_data.par)
+plt.plot(longest_streak_data.datetime, longest_streak_data.par, color='black')
 plt.xlabel("")
-plt.ylabel("PAR")
+plt.ylabel("PAR", fontsize=15)
 plt.tight_layout()
 plt.grid(True)
-plt.savefig('figs/bc_par.png')
+plt.savefig('/Users/au740615/Documents/projects/ecokgml-example/figs/bc_par.png')
 plt.show()
 
 
-plt.figure(figsize=(10, 4))
-plt.plot(longest_streak_data.datetime, longest_streak_data.chlor_rfu)
-plt.title("Monitored time series")
+plt.figure(figsize=(6,3 ))
+plt.plot(longest_streak_data.datetime, longest_streak_data.chlor_rfu, color='black')
+#plt.title("Monitored time series")
 plt.xlabel("")
-plt.ylabel("Chl-a signal")
+plt.ylabel("Chl-a", fontsize=15)
 plt.grid(True)
 plt.tight_layout()
-plt.savefig('figs/bc_chla.png')
+plt.savefig('/Users/au740615/Documents/projects/ecokgml-example/figs/bc_chla.png')
 plt.show()
 
 
@@ -168,15 +169,20 @@ for iter in range(1,(len(longest_streak_data['do_sim'] ))):
     produc = r_prod/ (kd * z_dep) * light_limit[iter] * converted_chla[iter] * conv
     longest_streak_data['do_sim'][iter] = (produc + atm_exchange + resp) * delta_t + longest_streak_data['do_sim'][iter - 1]
 
+mse = mean_squared_error(longest_streak_data.do_raw, longest_streak_data.do_sim)
+mae = mean_absolute_error(longest_streak_data.do_raw, longest_streak_data.do_sim)
+print(f"Evaluation on do_raw: MSE = {mse:.4f}, MAE = {mae:.4f}")
+
 plt.figure(figsize=(10, 4))
-plt.plot(longest_streak_data.datetime, longest_streak_data.do_raw)
-plt.plot(longest_streak_data.datetime, longest_streak_data.do_sim)
-plt.title("Observed vs. modeled signal")
+plt.plot(longest_streak_data.datetime, longest_streak_data.do_raw, color='black', label="Observed DO",)
+plt.plot(longest_streak_data.datetime, longest_streak_data.do_sim, color='blue', label="PB Predicted DO",)
+#plt.title("Observed vs. modeled signal")
 plt.xlabel("")
-plt.ylabel("DO signal")
+plt.ylabel("DO", fontsize=15)
 plt.tight_layout()
 plt.grid(True)
-plt.savefig('figs/process_do.png')
+plt.legend()
+plt.savefig('/Users/au740615/Documents/projects/ecokgml-example/figs/process_do.png')
 plt.show()
 
 
@@ -192,7 +198,6 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.cluster import KMeans
-from sklearn.metrics import mean_squared_error, mean_absolute_error
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, TensorDataset
@@ -366,27 +371,27 @@ plt.figure(figsize=(14, 6))
 for cluster in sorted(df['cluster'].unique()):
     subset = df[df['cluster'] == cluster]
     plt.plot(subset['datetime'], subset['do_raw'], '.', label=f'Cluster {cluster}', alpha=0.6)
-plt.title("do_raw Time Series Colored by Cluster")
+#plt.title("do_raw Time Series Colored by Cluster")
 plt.xlabel("Date")
 plt.ylabel("Dissolved Oxygen (do_raw)")
 plt.legend()
 plt.grid(True)
 plt.tight_layout()
-plt.savefig('figs/do_cluster.png')
+plt.savefig('/Users/au740615/Documents/projects/ecokgml-example/figs/do_cluster.png')
 plt.show()
 
 
 plt.figure(figsize=(14, 6))
-plt.plot(df['datetime'].values[window_size:], true_raw_original, label="Observed DO (do_raw)", color='black')
-plt.plot(df['datetime'].values[window_size:], preds_raw_original, label="Predicted DO", color='red', alpha=0.7)
+plt.plot(df['datetime'].values[window_size:], true_raw_original, label="Observed DO", color='black')
+plt.plot(df['datetime'].values[window_size:], preds_raw_original, label="LSTM Predicted DO", color='red', alpha=0.7)
 plt.plot(df['datetime'].values[window_size:], df['do_sim'].values[window_size:], label="PB Predicted DO", color='blue', alpha=0.7)
-plt.title("Model vs Observed Dissolved Oxygen")
-plt.xlabel("Date")
-plt.ylabel("Dissolved Oxygen")
+#plt.title("Model vs Observed Dissolved Oxygen")
+plt.xlabel("")
+plt.ylabel("Dissolved Oxygen", fontsize=15)
 plt.legend()
 plt.grid(True)
 plt.tight_layout()
-plt.savefig('figs/lstm_do.png')
+plt.savefig('/Users/au740615/Documents/projects/ecokgml-example/figs/lstm_do.png')
 plt.show()
 
 
@@ -418,4 +423,4 @@ print("Number of feature names:", len(feature_names))
 
 
 shap.summary_plot(shap_values, features=X_flat, feature_names=feature_names, show=False)
-plt.savefig('figs/shapley.png')
+plt.savefig('/Users/au740615/Documents/projects/ecokgml-example/figs/shapley.png')
